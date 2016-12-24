@@ -1,0 +1,12 @@
+#!/bin/bash
+
+export PATH="$PYDE_PATH_BACKUP"
+export PS1="$PYDE_PS1_BACKUP"
+unset PYDE_ROOT
+unset PYDE_INSTALL
+unset PYDE_PATH_BACKUP
+unset PYDE_PS1_BACKUP
+
+if [ `uname` == "Darwin" ] ; then
+  export DYLD_LIBRARY_PATH="$PYDE_DYLD_LIBRARY_PATH_BACKUP"
+fi

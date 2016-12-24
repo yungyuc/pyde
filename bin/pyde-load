@@ -1,0 +1,35 @@
+#!/bin/bash
+
+if [ -n "$PYDE_ROOT" ] ; then
+  echo "PYDE_ROOT=$PYDE_ROOT is already set; exit"
+  return 1
+fi
+
+export PYDE_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+export PYDE_INSTALL=$PYDE_ROOT/opt
+
+# path munge.
+namemunge () {
+  if ! echo ${!1} | egrep -q "(^|:)$2($|:)" ; then
+    if [ -z "${!1}" ] ; then
+      eval "$1=$2"
+    else
+      if [ "$3" == "after" ] ; then
+        eval "$1=\$$1:$2"
+      else
+        eval "$1=$2:\$$1"
+      fi
+    fi
+  fi
+  eval "export $1"
+}
+
+export PYDE_PATH_BACKUP="$PATH"
+export PYDE_PS1_BACKUP="$PS1"
+namemunge PATH $PYDE_INSTALL/bin
+export PS1="[$PYDE_ROOT] $PS1"
+
+if [ `uname` == "Darwin" ] ; then
+  export PYDE_DYLD_LIBRARY_PATH_BACKUP="$DYLD_LIBRARY_PATH"
+  namemunge DYLD_LIBRARY_PATH $PYDE_INSTALL/lib
+fi
