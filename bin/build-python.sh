@@ -6,6 +6,13 @@
 PYDE_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 PYDE_INSTALL=$PYDE_ROOT/opt
 
+mkdir -p $PYDE_ROOT/tmp
+
+cat <<EOF > setup.cfg
+[build_ext]
+include_dirs=$PYDE_INSTALL/include
+EOF
+
 ./configure \
   --with-pydebug \
   --enable-ipv6 \
@@ -14,7 +21,7 @@ PYDE_INSTALL=$PYDE_ROOT/opt
   --with-ensurepip=no \
   --with-tcltk-includes="-I$PYDE_INSTALL/include" \
   --with-tcltk-libs="-L$PYDE_INSTALL/lib -ltcl8.5 -ltk8.5" \
-  | tee configure.log 2>&1
+  | tee $PYDE_ROOT/tmp/python-configure.log 2>&1
 
 make -j \
-  | tee make.log 2>&1
+  | tee $PYDE_ROOT/tmp/python-make.log 2>&1
